@@ -7,11 +7,11 @@ class Sortable extends Component {
         super(props);
         this.dataSource = props.dataSource;
         this.columns = props.columns;
-        this.sortableContainer = React.createRef();
+        this.ref = React.createRef();
     }
   
     componentDidMount() {
-        var tableNode = document.querySelector('.tableClass .ant-table-tbody');
+        var tableNode = this.ref.current.querySelector('.ant-table-tbody');
         sortablejs.create(tableNode, {
             group: {
                 pull: 'clone',
@@ -23,7 +23,7 @@ class Sortable extends Component {
     }
   
     render() { return (
-        <div className="tableClass">
+        <div ref={this.ref}>
             <Table
               dataSource={this.dataSource}
               columns={this.columns}

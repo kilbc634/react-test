@@ -11,6 +11,10 @@ body {
   padding: 0;
 }
 
+.Pane.vertical.Pane1 {
+  overflow: auto;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
