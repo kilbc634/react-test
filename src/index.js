@@ -1,10 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import 'antd/dist/antd.compact.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 import data from './data/params.json'
 import SplitPane from 'react-split-pane';
-import AbilityMenuRender from './AbilityMenuRender'
+import { Navbar, Form, FormControl, Button } from 'react-bootstrap';
+import { AbilityMenuRender, AbilityMenuHeader } from './AbilityMenuRender'
 import reportWebVitals from './reportWebVitals';
 
 const styles = {
@@ -57,12 +59,21 @@ ReactDOM.render(
   <div>
     <SplitPane 
       split="vertical"
-      minSize={300}
-      defaultSize={500}
+      minSize={250}
+      defaultSize={600}
       resizerStyle={styles}
-      maxSize={600}
+      maxSize={900}
     >
       <div>
+        <Navbar sticky="top" bg="dark" variant="dark" className="p-0">
+          <div className="col p-0">
+            <Form inline>
+              <FormControl type="text" placeholder="Search" className="mr-sm-2" />
+              <Button variant="outline-info">Search</Button>
+            </Form>
+            <AbilityMenuHeader/>
+          </div>
+        </Navbar>
         <AbilityMenuRender abilityMenu={formatAbilityList(abilityList)} />
       </div>
       <div>

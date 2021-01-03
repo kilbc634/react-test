@@ -5,7 +5,8 @@ import Sortable from './Sortable';
 const _columns = [
     {
       title: '能力',
-      dataIndex: 'name'
+      dataIndex: 'name',
+      width: 200
     },
     {
       title: '効果',
@@ -52,4 +53,12 @@ class AbilityMenuRender extends Component {
     };
 }
 
-export default AbilityMenuRender;
+class AbilityMenuHeader extends Component {
+    render() {
+        return (
+          <Sortable headerMaster={true} columns={_columns}></Sortable>
+        )
+    }
+}
+
+export { AbilityMenuRender, AbilityMenuHeader };
