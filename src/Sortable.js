@@ -32,10 +32,9 @@ const ResizableHeader = (props) => {
 class Sortable extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            columns: props.columns
-        }
+        this.columns = props.columns;
         this.headerMaster = props.headerMaster || false;
+        this.onUpdateHeader = props.onUpdateHeader;
         this.dataSource = props.dataSource;
         this.ref = React.createRef();
     }
@@ -43,17 +42,7 @@ class Sortable extends Component {
     handleResize = index => (e, { size }) => {
         e.stopImmediatePropagation();
         // change the master table col width size
-        this.setState(({ columns }) => {
-          const nextColumns = [...columns];
-          nextColumns[index] = {
-            ...nextColumns[index],
-            width: size.width,
-          };
-          return { columns: nextColumns };
-        });
-        // change other table col width size
-        console.log('master table onResize');
-        
+        this.onUpdateHeader(index, size.width);
     };
   
     componentDidMount() {
@@ -71,10 +60,15 @@ class Sortable extends Component {
             });
         } 
     }
+
+    shouldComponentUpdate(nextProps) {
+        this.columns = nextProps.columns;
+        return true;
+    }
   
     render() {
         if (this.headerMaster) {
-            const columns = this.state.columns.map((col, index) => ({
+            const columns = this.columns.map((col, index) => ({
                 ...col,
                 onHeaderCell: column => ({
                     width: column.width,
@@ -102,7 +96,7 @@ class Sortable extends Component {
                 <div ref={this.ref}>
                   <Table
                     dataSource={this.dataSource}
-                    columns={this.state.columns}
+                    columns={this.columns}
                     bordered={true}
                     pagination={false}
                     showHeader={false}

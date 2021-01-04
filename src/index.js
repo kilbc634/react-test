@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import 'antd/dist/antd.compact.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -55,6 +55,54 @@ function formatAbilityList(abilityList) {
     return dataList;
 }
 
+class Sidebar extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            columns: [
+                {
+                  title: '能力',
+                  dataIndex: 'name',
+                  width: 100
+                },
+                {
+                  title: '効果',
+                  dataIndex: 'effect'
+                }
+            ]
+        }
+        this.updateColumnWidth = this.updateColumnWidth.bind(this);
+    }
+
+    updateColumnWidth = (index, width) => {
+        this.setState(({ columns }) => {
+            const nextColumns = [...columns];
+            nextColumns[index] = {
+              ...nextColumns[index],
+              width: width,
+            };
+            return { columns: nextColumns };
+        });
+    }
+
+    render() {
+        return (
+          <div>
+            <Navbar sticky="top" bg="dark" variant="dark" className="p-0">
+              <div className="col p-0">
+                <Form inline>
+                  <FormControl type="text" placeholder="Search" className="mr-sm-2" />
+                  <Button variant="outline-info">Search</Button>
+                </Form>
+                <AbilityMenuHeader onUpdateHeader={this.updateColumnWidth} columns={this.state.columns}/>
+              </div>
+            </Navbar>
+            <AbilityMenuRender abilityMenu={formatAbilityList(abilityList)} columns={this.state.columns}/>
+          </div>
+        )
+    }
+}
+
 ReactDOM.render(
   <div>
     <SplitPane 
@@ -64,18 +112,7 @@ ReactDOM.render(
       resizerStyle={styles}
       maxSize={900}
     >
-      <div>
-        <Navbar sticky="top" bg="dark" variant="dark" className="p-0">
-          <div className="col p-0">
-            <Form inline>
-              <FormControl type="text" placeholder="Search" className="mr-sm-2" />
-              <Button variant="outline-info">Search</Button>
-            </Form>
-            <AbilityMenuHeader/>
-          </div>
-        </Navbar>
-        <AbilityMenuRender abilityMenu={formatAbilityList(abilityList)} />
-      </div>
+      <Sidebar/>
       <div>
         <h1>SplitPane main window</h1>
       </div>

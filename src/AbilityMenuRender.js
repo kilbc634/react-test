@@ -2,18 +2,6 @@ import React, { Component } from 'react';
 import { Collapse } from 'antd';
 import Sortable from './Sortable';
 
-const _columns = [
-    {
-      title: '能力',
-      dataIndex: 'name',
-      width: 200
-    },
-    {
-      title: '効果',
-      dataIndex: 'effect'
-    }
-];
-
 const getHeaderName = (groupId) => {
     if(groupId==="A"){return"ステータス"}
     else{if(groupId==="A+"){return"ステータス(特殊)"}
@@ -34,6 +22,12 @@ class AbilityMenuRender extends Component {
     constructor(props) {
         super(props);
         this.abilityMenu = props.abilityMenu;
+        this.columns = props.columns;
+    }
+
+    shouldComponentUpdate(nextProps) {
+        this.columns = nextProps.columns;
+        return true;
     }
 
     render() {
@@ -41,7 +35,7 @@ class AbilityMenuRender extends Component {
         for (let menu of this.abilityMenu) {
             panels.push(
               <Collapse.Panel header={getHeaderName(menu['gid'])} key={menu['gid']}>
-                <Sortable dataSource={menu['content']} columns={_columns}></Sortable>
+                <Sortable dataSource={menu['content']} columns={this.columns}></Sortable>
               </Collapse.Panel>
             )
         }
@@ -54,9 +48,20 @@ class AbilityMenuRender extends Component {
 }
 
 class AbilityMenuHeader extends Component {
+    constructor(props) {
+        super(props);
+        this.onUpdateHeader = props.onUpdateHeader;
+        this.columns = props.columns;
+    }
+
+    shouldComponentUpdate(nextProps) {
+        this.columns = nextProps.columns;
+        return true;
+    }
+
     render() {
         return (
-          <Sortable headerMaster={true} columns={_columns}></Sortable>
+          <Sortable headerMaster={true} columns={this.columns} onUpdateHeader={this.onUpdateHeader}></Sortable>
         )
     }
 }
