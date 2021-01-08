@@ -34,13 +34,13 @@ class AbilityMenuRender extends Component {
         var panels = [];
         for (let menu of this.abilityMenu) {
             panels.push(
-              <Collapse.Panel header={getHeaderName(menu['gid'])} key={menu['gid']}>
+              <Collapse.Panel header={getHeaderName(menu['gid'])} key={menu['gid']} forceRender={false}>
                 <Sortable dataSource={menu['content']} columns={this.columns}></Sortable>
               </Collapse.Panel>
             )
         }
         return (
-        <Collapse>
+        <Collapse destroyInactivePanel={true}>
           {panels}
         </Collapse>
         )

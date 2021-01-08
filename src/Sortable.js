@@ -41,7 +41,7 @@ class Sortable extends Component {
 
     handleResize = index => (e, { size }) => {
         e.stopImmediatePropagation();
-        // change the master table col width size
+        // change the width size of master table col
         this.onUpdateHeader(index, size.width);
     };
   
