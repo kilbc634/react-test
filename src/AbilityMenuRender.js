@@ -27,6 +27,7 @@ class AbilityMenuRender extends Component {
 
     shouldComponentUpdate(nextProps) {
         this.columns = nextProps.columns;
+        this.abilityMenu = nextProps.abilityMenu;
         return true;
     }
 
@@ -61,7 +62,9 @@ class AbilityMenuHeader extends Component {
 
     render() {
         return (
-          <Sortable headerMaster={true} columns={this.columns} onUpdateHeader={this.onUpdateHeader}></Sortable>
+          <div className="col p-0">
+            <Sortable headerMaster={true} columns={this.columns} onUpdateHeader={this.onUpdateHeader} />
+          </div>
         )
     }
 }

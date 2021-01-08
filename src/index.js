@@ -5,7 +5,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 import data from './data/params.json'
 import SplitPane from 'react-split-pane';
-import { Navbar, Form, FormControl, Button } from 'react-bootstrap';
+import { Navbar } from 'react-bootstrap';
+import { Input } from 'antd';
 import { AbilityMenuRender, AbilityMenuHeader } from './AbilityMenuRender'
 import reportWebVitals from './reportWebVitals';
 
@@ -26,9 +27,12 @@ var abilityList = data.abilityList.map((item) => {
     });
 });
 
-function formatAbilityList(abilityList) {
+function formatAbilityList(abilityList, filter='') {
     var dataList = [];
     for (let ability of abilityList) {
+        if (filter && !ability['name'].includes(filter)) {
+            continue;
+        }
         let newGroup = true;
         for (let data of dataList) {
             if (data['gid'] === ability['gid']) {
@@ -58,46 +62,62 @@ function formatAbilityList(abilityList) {
 class Sidebar extends Component {
     constructor(props) {
         super(props);
+        this.updateColumnWidth = this.updateColumnWidth.bind(this);
+        this.onSearch = this.onSearch.bind(this);
         this.state = {
             columns: [
                 {
-                  title: '能力',
+                  title: () => {
+                      return (
+                        <Input.Search
+                          addonBefore="能力"
+                          placeholder="input search text"
+                          allowClear
+                          enterButton
+                          size="large"
+                          onSearch={this.onSearch}
+                        />
+                      )
+                  },
                   dataIndex: 'name',
-                  width: 100
+                  width: 400,
+                  minWidth: 300
                 },
                 {
                   title: '効果',
                   dataIndex: 'effect'
                 }
-            ]
+            ],
+            searchText: ''
         }
-        this.updateColumnWidth = this.updateColumnWidth.bind(this);
     }
 
     updateColumnWidth = (index, width) => {
         this.setState(({ columns }) => {
             const nextColumns = [...columns];
-            nextColumns[index] = {
-              ...nextColumns[index],
-              width: width,
-            };
-            return { columns: nextColumns };
+            if (width >= columns[index].minWidth)
+                nextColumns[index] = {
+                  ...nextColumns[index],
+                  width: width,
+                };
+            return { columns: nextColumns }
         });
     }
+
+    onSearch = (text) => {
+        this.setState(() => {
+            return { searchText: text }
+        });
+    }
+    
 
     render() {
         return (
           <div>
             <Navbar sticky="top" bg="dark" variant="dark" className="p-0">
-              <div className="col p-0">
-                <Form inline>
-                  <FormControl type="text" placeholder="Search" className="mr-sm-2" />
-                  <Button variant="outline-info">Search</Button>
-                </Form>
-                <AbilityMenuHeader onUpdateHeader={this.updateColumnWidth} columns={this.state.columns}/>
-              </div>
+              <AbilityMenuHeader onUpdateHeader={this.updateColumnWidth} columns={this.state.columns}/>
             </Navbar>
-            <AbilityMenuRender abilityMenu={formatAbilityList(abilityList)} columns={this.state.columns}/>
+            <AbilityMenuRender abilityMenu={formatAbilityList(abilityList, this.state.searchText)} columns={this.state.columns}/>
           </div>
         )
     }

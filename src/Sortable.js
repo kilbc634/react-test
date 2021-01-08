@@ -63,6 +63,7 @@ class Sortable extends Component {
 
     shouldComponentUpdate(nextProps) {
         this.columns = nextProps.columns;
+        this.dataSource = nextProps.dataSource;
         return true;
     }
   
