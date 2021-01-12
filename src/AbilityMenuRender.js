@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Collapse } from 'antd';
-import Sortable from './Sortable';
+import SidebarTable from './SidebarTable';
 
 const getHeaderName = (groupId) => {
     if(groupId==="A"){return"ステータス"}
@@ -36,7 +36,7 @@ class AbilityMenuRender extends Component {
         for (let menu of this.abilityMenu) {
             panels.push(
               <Collapse.Panel header={getHeaderName(menu['gid'])} key={menu['gid']} forceRender={false}>
-                <Sortable dataSource={menu['content']} columns={this.columns}></Sortable>
+                <SidebarTable dataSource={menu['content']} columns={this.columns}></SidebarTable>
               </Collapse.Panel>
             )
         }
@@ -63,7 +63,7 @@ class AbilityMenuHeader extends Component {
     render() {
         return (
           <div className="col p-0">
-            <Sortable headerMaster={true} columns={this.columns} onUpdateHeader={this.onUpdateHeader} />
+            <SidebarTable headerMaster={true} columns={this.columns} onUpdateHeader={this.onUpdateHeader} />
           </div>
         )
     }

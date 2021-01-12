@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import $ from 'jquery';
 import sortablejs from 'sortablejs';
 import { Table } from 'antd';
 import { Resizable } from 'react-resizable';
@@ -29,7 +30,15 @@ const ResizableHeader = (props) => {
     );
 };
 
-class Sortable extends Component {
+const droppableClass = 'droppable';
+function droppable_highLight() {
+    $('.panelArea.addPanel').addClass(droppableClass);
+}
+function droppable_unLight() {
+    $(`.${droppableClass}`).removeClass(droppableClass);
+}
+
+class SidebarTable extends Component {
     constructor(props) {
         super(props);
         this.columns = props.columns;
@@ -41,7 +50,6 @@ class Sortable extends Component {
 
     handleResize = index => (e, { size }) => {
         e.stopImmediatePropagation();
-        // change the width size of master table col
         this.onUpdateHeader(index, size.width);
     };
   
@@ -56,7 +64,16 @@ class Sortable extends Component {
                     put: false
                 },
                 animation: 150,
-                sort: true
+                sort: false,
+                onStart: (evt) => {
+                    droppable_highLight();
+                },
+                onMove: () => {
+                    return -1;
+                },
+                onEnd: (evt) => {
+                    droppable_unLight();
+                }
             });
         } 
     }
@@ -108,4 +125,4 @@ class Sortable extends Component {
     }
 }
 
-export default Sortable;
+export default SidebarTable;
