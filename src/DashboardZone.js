@@ -63,14 +63,16 @@ class DashboardZone extends Component {
                 evt.item.style.display = 'none';
                 if (evt.from.classList.contains('ant-table-tbody')) {
                     let dataKey = evt.item.attributes['data-row-key'].value;
-                    this.includePanel();
+                    this.includePanel(dataKey);
                     evt.item.remove();
                 }
             }
         });
     }
 
-    includePanel = () => {
+    includePanel = (dataKey) => {
+        // GET panel data with dataKey
+        
         this.setState((state) => {
             const nextPanelCount = state.panelCount + 1;
             const nextPanelList = [...state.panelList];

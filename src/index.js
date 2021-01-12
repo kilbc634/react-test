@@ -7,7 +7,13 @@ import SplitPane from 'react-split-pane';
 import { Container , Row } from 'react-bootstrap';
 import Sidebar from './Sidebar';
 import DashboardZone from './DashboardZone';
+import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
 import reportWebVitals from './reportWebVitals';
+
+const client = new ApolloClient({
+    uri: 'http://127.0.0.1:5000/',
+    cache: new InMemoryCache()
+});
 
 const styles = {
     background: '#000',
@@ -18,7 +24,7 @@ const styles = {
 };
 
 ReactDOM.render(
-  <div>
+  <ApolloProvider client={client}>
     <SplitPane 
       split="vertical"
       minSize={250}
@@ -34,7 +40,7 @@ ReactDOM.render(
         <DashboardZone/>
       </Container>
     </SplitPane>
-  </div>,
+  </ApolloProvider>,
   document.getElementById('root')
 );
 
