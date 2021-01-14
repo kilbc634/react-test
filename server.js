@@ -2,19 +2,9 @@ const express = require('express');
 const { ApolloServer, gql } = require('apollo-server-express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
+const typeDefs = require('./api/typeDefs');
+const resolvers = require('./api/resolvers');
 const setting = require('./setting');
-
-// --------------------- GQL test Querys
-const typeDefs = gql`
-  type Query {
-    hello: String
-  }
-`;
-const resolvers = {
-  Query: {
-    hello: () => 'Hello world!',
-  },
-};
 
 // --------------------- Session init
 
@@ -36,7 +26,7 @@ app.use(sessionMiddleware);
 
 const GQLserver = new ApolloServer({
     typeDefs,
-    resolvers,
+    resolvers
 });
 GQLserver.applyMiddleware({app});
 
