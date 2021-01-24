@@ -1,6 +1,10 @@
 
 const resolvers = {
     Query: {
+        testData: async (_, __, { dataSources }) => {
+            var data = await dataSources.redisAPI.get_data_test();
+            return data;
+        },
         postOptionData: (parent, args) => {
             const {name, type} = args;
             const ts = Date.now().toString();

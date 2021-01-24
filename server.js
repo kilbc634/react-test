@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const typeDefs = require('./api/typeDefs');
 const resolvers = require('./api/resolvers');
+const redisAPI = require('./api/redisAPI');
 const setting = require('./setting');
 
 // --------------------- Session init
@@ -26,7 +27,10 @@ app.use(sessionMiddleware);
 
 const GQLserver = new ApolloServer({
     typeDefs,
-    resolvers
+    resolvers,
+    dataSources: () => ({
+        redisAPI: new redisAPI('redisDB')
+    })
 });
 GQLserver.applyMiddleware({app});
 

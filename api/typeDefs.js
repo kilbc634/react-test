@@ -2,6 +2,7 @@ const { gql } = require('apollo-server-express');
 
 const typeDefs = gql`
   type Query {
+    testData: String!
     postOptionData(name: String!, type: String!): PostOptionData
   }
 
