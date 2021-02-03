@@ -29,4 +29,40 @@ redisModule.get = function(key) {
     });
 }
 
+redisModule.set = function(key, value) {
+    return new Promise((resolve, reject) => {
+        RedisClient.set(key, value, (err) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve('');
+            }
+        });
+    });
+}
+
+redisModule.lrange = function(key, begin, end) {
+    return new Promise((resolve, reject) => {
+        RedisClient.lrange(key, begin, end, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result);
+            }
+        });
+    });
+}
+
+redisModule.lpush = function(key, value) {
+    return new Promise((resolve, reject) => {
+        RedisClient.lpush(key, value, (err) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve('');
+            }
+        });
+    });
+}
+
 module.exports = redisModule;
