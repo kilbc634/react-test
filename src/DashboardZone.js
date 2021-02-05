@@ -2,31 +2,48 @@ import React, { Component } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import sortablejs from 'sortablejs';
 import CanvasJSReact from './canvasjs.react';
+import { useQuery } from '@apollo/client';
+import { GQL_getOptionData } from './gql_query/gql_optionData';
 
 const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
-function generateDataPoints(noOfDps) {
-  var xVal = 1, yVal = 100;
-  var dps = [];
-  for(var i = 0; i < noOfDps; i++) {
-    yVal = yVal +  Math.round(5 + Math.random() *(-5-5));
-    dps.push({x: xVal,y: yVal});	
-    xVal++;
-  }
-  return dps;
+function PanelComponent(props) {
+    var dataCode = props.dataCode;
+    const { loading, error, data } = useQuery(GQL_getOptionData, {
+        variables: {
+            "code": dataCode,
+            "type": "weapon"
+        }
+    });
+    if (loading) return null;
+    if (error) return `Error! ${error}`;
+    const options = {
+        theme: "light2", // "light1", "dark1", "dark2"
+        animationEnabled: true,
+        zoomEnabled: true,
+        title: {
+          text: `${data['getOptionData']['code']} (${data['getOptionData']['type']})`
+        },
+        data: [{
+          type: "area",
+          dataPoints: generateDataPoints(data['getOptionData']['priceDatas'], 's6')
+        }]
+    }
+    return (
+      <Row>
+        <CanvasJSChart options = {options} />
+      </Row>
+    );
 }
 
-const options = {
-  theme: "light2", // "light1", "dark1", "dark2"
-  animationEnabled: true,
-  zoomEnabled: true,
-  title: {
-    text: "Try Zooming and Panning"
-  },
-  data: [{
-    type: "area",
-    dataPoints: generateDataPoints(500)
-  }]
+function generateDataPoints(datas, dataKey) {
+    var dataPoints = datas.map(data => {
+        return {
+            x: Number(data['timestamp']),
+            y: data[dataKey]
+        }
+    });
+    return dataPoints;
 }
 
 class DashboardZone extends Component {
@@ -62,24 +79,20 @@ class DashboardZone extends Component {
             onAdd: (evt) => {
                 evt.item.style.display = 'none';
                 if (evt.from.classList.contains('ant-table-tbody')) {
-                    let dataKey = evt.item.attributes['data-row-key'].value;
-                    this.includePanel(dataKey);
+                    let dataCode = evt.item.attributes['data-row-key'].value;
+                    this.includePanel(dataCode);
                     evt.item.remove();
                 }
             }
         });
     }
 
-    includePanel = (dataKey) => {
-        // GET panel data with dataKey
-        
+    includePanel = (dataCode) => {
         this.setState((state) => {
             const nextPanelCount = state.panelCount + 1;
             const nextPanelList = [...state.panelList];
             nextPanelList.push(
-              <Row key={nextPanelCount}>
-                <CanvasJSChart options = {options} />
-              </Row>
+                <PanelComponent dataCode="AA0204" key={nextPanelCount}/>
             )
             return {
                 panelCount: nextPanelCount,
