@@ -33,6 +33,10 @@ body {
   background-clip: padding-box;
 }
 
+.sticky-top {
+  z-index: 900;
+}
+
 .react-resizable-handle {
   position: absolute;
   right: -5px;

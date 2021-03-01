@@ -1,11 +1,21 @@
 import React, { Component } from 'react';
-import { Row, Col } from 'react-bootstrap';
+import { Row } from 'react-bootstrap';
 import sortablejs from 'sortablejs';
+import PostPriceDataButton from './PostPriceData';
 import CanvasJSReact from './canvasjs.react';
 import { useQuery } from '@apollo/client';
 import { GQL_getOptionData } from './gql_query/gql_optionData';
-
 const CanvasJSChart = CanvasJSReact.CanvasJSChart;
+
+function generateDataPoints(datas, dataKey) {
+  var dataPoints = datas.map(data => {
+      return {
+          x: Number(data['timestamp']),
+          y: data[dataKey]
+      }
+  });
+  return dataPoints;
+}
 
 function PanelComponent(props) {
     var dataCode = props.dataCode;
@@ -31,19 +41,13 @@ function PanelComponent(props) {
     }
     return (
       <Row>
-        <CanvasJSChart options = {options} />
+        <PostPriceDataButton
+          itemCode={data['getOptionData']['code']}
+          itemType={data['getOptionData']['type']}
+        />
+        <CanvasJSChart options={options}/>
       </Row>
     );
-}
-
-function generateDataPoints(datas, dataKey) {
-    var dataPoints = datas.map(data => {
-        return {
-            x: Number(data['timestamp']),
-            y: data[dataKey]
-        }
-    });
-    return dataPoints;
 }
 
 class DashboardZone extends Component {
@@ -92,7 +96,7 @@ class DashboardZone extends Component {
             const nextPanelCount = state.panelCount + 1;
             const nextPanelList = [...state.panelList];
             nextPanelList.push(
-                <PanelComponent dataCode="AA0204" key={nextPanelCount}/>
+                <PanelComponent dataCode="AA0204" key={state.panelCount}/>
             )
             return {
                 panelCount: nextPanelCount,
