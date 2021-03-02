@@ -27,17 +27,51 @@ function PanelComponent(props) {
     });
     if (loading) return null;
     if (error) return `Error! ${error}`;
-    const options = {
-        theme: "light2", // "light1", "dark1", "dark2"
-        animationEnabled: true,
-        zoomEnabled: true,
-        title: {
-          text: `${data['getOptionData']['code']} (${data['getOptionData']['type']})`
-        },
-        data: [{
-          type: "area",
-          dataPoints: generateDataPoints(data['getOptionData']['priceDatas'], 's6')
-        }]
+    var options = {};
+    if (data['getOptionData']['priceDatas'].length == 0) {
+        options = {
+            theme: "dark2", // "light1", "light2", "dark1", "dark2"
+            title: {
+                text: `${data['getOptionData']['code']} (${data['getOptionData']['type']})`
+            },
+            subtitles: [{
+                text: "NO DATA",
+                fontSize: 70,
+                verticalAlign: 'center'
+            }],
+            data: [
+                {
+                    type: "area",
+                    dataPoints: null
+                }
+            ]
+        }
+    } else {
+        options = {
+            theme: "dark2", // "light1", "light2", "dark1", "dark2"
+            animationEnabled: true,
+            zoomEnabled: true,
+            title: {
+                text: `${data['getOptionData']['code']} (${data['getOptionData']['type']})`
+            },
+            data: [
+                {
+                    type: "area",
+                    xValueType: "dateTime",
+                    dataPoints: generateDataPoints(data['getOptionData']['priceDatas'], 's6')
+                },
+                {
+                    type: "area",
+                    xValueType: "dateTime",
+                    dataPoints: generateDataPoints(data['getOptionData']['priceDatas'], 's7')
+                },
+                {
+                    type: "area",
+                    xValueType: "dateTime",
+                    dataPoints: generateDataPoints(data['getOptionData']['priceDatas'], 's8')
+                }
+            ]
+        }
     }
     return (
       <Row>
@@ -96,7 +130,7 @@ class DashboardZone extends Component {
             const nextPanelCount = state.panelCount + 1;
             const nextPanelList = [...state.panelList];
             nextPanelList.push(
-                <PanelComponent dataCode="AA0204" key={state.panelCount}/>
+                <PanelComponent dataCode="AA0302" key={state.panelCount}/>
             )
             return {
                 panelCount: nextPanelCount,
