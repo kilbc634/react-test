@@ -8,13 +8,13 @@ import { GQL_getOptionData } from './gql_query/gql_optionData';
 const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 function generateDataPoints(datas, dataKey) {
-  var dataPoints = datas.map(data => {
-      return {
-          x: Number(data['timestamp']),
-          y: data[dataKey]
-      }
-  });
-  return dataPoints;
+    var dataPoints = datas.map(data => {
+        return {
+            x: Number(data['timestamp']),
+            y: data[dataKey] || null
+        }
+    });
+    return dataPoints;
 }
 
 function PanelComponent(props) {
@@ -41,33 +41,46 @@ function PanelComponent(props) {
             }],
             data: [
                 {
-                    type: "area",
+                    type: 'area',
                     dataPoints: null
                 }
             ]
         }
     } else {
         options = {
-            theme: "dark2", // "light1", "light2", "dark1", "dark2"
+            theme: 'dark1', // "light1", "light2", "dark1", "dark2"
             animationEnabled: true,
             zoomEnabled: true,
             title: {
                 text: `${data['getOptionData']['code']} (${data['getOptionData']['type']})`
             },
+            legend: {
+                horizontalAlign: 'center',
+                verticalAlign: 'top'
+            },
             data: [
                 {
-                    type: "area",
-                    xValueType: "dateTime",
+                    type: 'stackedArea',
+                    //fillOpacity: 1,
+                    legendText: "S6",
+                    showInLegend: true,
+                    xValueType: 'dateTime',
                     dataPoints: generateDataPoints(data['getOptionData']['priceDatas'], 's6')
                 },
                 {
-                    type: "area",
-                    xValueType: "dateTime",
+                    type: 'stackedArea',
+                    //fillOpacity: 1,
+                    legendText: "S7",
+                    showInLegend: true,
+                    xValueType: 'dateTime',
                     dataPoints: generateDataPoints(data['getOptionData']['priceDatas'], 's7')
                 },
                 {
-                    type: "area",
-                    xValueType: "dateTime",
+                    type: 'stackedArea',
+                    //fillOpacity: 1,
+                    legendText: "S8",
+                    showInLegend: true,
+                    xValueType: 'dateTime',
                     dataPoints: generateDataPoints(data['getOptionData']['priceDatas'], 's8')
                 }
             ]
