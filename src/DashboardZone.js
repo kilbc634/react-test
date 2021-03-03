@@ -103,7 +103,8 @@ class DashboardZone extends Component {
         super(props);
         this.state = {
             panelCount: 0,
-            panelList: []
+            panelList: [],
+            codeList: []
         }
         this.newPanelAreaRef = React.createRef();
     }
@@ -132,7 +133,9 @@ class DashboardZone extends Component {
                 evt.item.style.display = 'none';
                 if (evt.from.classList.contains('ant-table-tbody')) {
                     let dataCode = evt.item.attributes['data-row-key'].value;
-                    this.includePanel(dataCode);
+                    if (!this.state.codeList.includes(dataCode)) {
+                        this.includePanel(dataCode);
+                    }
                     evt.item.remove();
                 }
             }
@@ -142,13 +145,16 @@ class DashboardZone extends Component {
     includePanel = (dataCode) => {
         this.setState((state) => {
             const nextPanelCount = state.panelCount + 1;
+            const nextCodeList = [...state.codeList];
+            nextCodeList.push(dataCode);
             const nextPanelList = [...state.panelList];
             nextPanelList.push(
                 <PanelComponent dataCode={dataCode} key={state.panelCount}/>
-            )
+            );
             return {
                 panelCount: nextPanelCount,
-                panelList: nextPanelList
+                panelList: nextPanelList,
+                codeList: nextCodeList
             }
         });
     }
