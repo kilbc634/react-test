@@ -19,7 +19,7 @@ function generateDataPoints(datas, dataKey) {
 
 function PanelComponent(props) {
     var dataCode = props.dataCode;
-    const { loading, error, data } = useQuery(GQL_getOptionData, {
+    const { loading, error, data, refetch } = useQuery(GQL_getOptionData, {
         variables: {
             "code": dataCode,
             "type": "weapon"
@@ -60,15 +60,15 @@ function PanelComponent(props) {
             },
             data: [
                 {
-                    type: 'stackedArea',
+                    type: 'area',
                     //fillOpacity: 1,
-                    legendText: "S6",
+                    legendText: "S8",
                     showInLegend: true,
                     xValueType: 'dateTime',
-                    dataPoints: generateDataPoints(data['getOptionData']['priceDatas'], 's6')
+                    dataPoints: generateDataPoints(data['getOptionData']['priceDatas'], 's8')
                 },
                 {
-                    type: 'stackedArea',
+                    type: 'area',
                     //fillOpacity: 1,
                     legendText: "S7",
                     showInLegend: true,
@@ -76,12 +76,12 @@ function PanelComponent(props) {
                     dataPoints: generateDataPoints(data['getOptionData']['priceDatas'], 's7')
                 },
                 {
-                    type: 'stackedArea',
+                    type: 'area',
                     //fillOpacity: 1,
-                    legendText: "S8",
+                    legendText: "S6",
                     showInLegend: true,
                     xValueType: 'dateTime',
-                    dataPoints: generateDataPoints(data['getOptionData']['priceDatas'], 's8')
+                    dataPoints: generateDataPoints(data['getOptionData']['priceDatas'], 's6')
                 }
             ]
         }
@@ -91,6 +91,7 @@ function PanelComponent(props) {
         <PostPriceDataButton
           itemCode={data['getOptionData']['code']}
           itemType={data['getOptionData']['type']}
+          onPosted={refetch}
         />
         <CanvasJSChart options={options}/>
       </Row>
@@ -143,7 +144,7 @@ class DashboardZone extends Component {
             const nextPanelCount = state.panelCount + 1;
             const nextPanelList = [...state.panelList];
             nextPanelList.push(
-                <PanelComponent dataCode="AA0302" key={state.panelCount}/>
+                <PanelComponent dataCode={dataCode} key={state.panelCount}/>
             )
             return {
                 panelCount: nextPanelCount,

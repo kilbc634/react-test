@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { useQuery } from '@apollo/client';
 import { GQL_postOptionData } from './gql_query/gql_optionData';
-import { Button, Modal, Input, Select } from 'antd';
+import { Button, Modal, Input, Select, Space, Divider } from 'antd';
 
 function PostPriceDataComponent(props) {
     var itemCode =  props.itemCode;
@@ -30,7 +30,7 @@ function PostPriceDataComponent(props) {
     if (error) {
         setTimeout(() => {
             if (onReset) {onReset();}
-        }, 3000);
+        }, 1000);
         return (
           <Button type="primary" danger>Error</Button>
         )
@@ -38,7 +38,7 @@ function PostPriceDataComponent(props) {
     setTimeout(() => {
         if (onDone) {onDone();}
         if (onReset) {onReset();}
-    }, 3000);
+    }, 1000);
     return (
       <Button>OK</Button>
     )
@@ -51,6 +51,7 @@ class PostPriceData extends Component {
         this.state = {
             itemCode: props.itemCode,
             itemType: props.itemType,
+            onPosted: props.onPosted,
             priceValue: {
                 any: null,
                 s1: null,
@@ -67,6 +68,7 @@ class PostPriceData extends Component {
         }
         this.handleShow = this.handleShow.bind(this);
         this.handleClose = this.handleClose.bind(this);
+        this.handleUpdateAndClose = this.handleUpdateAndClose.bind(this);
         this.handlePosting = this.handlePosting.bind(this);
         this.handlePost = this.handlePost.bind(this);
         this.onChangePriceValue = this.onChangePriceValue.bind(this);
@@ -83,6 +85,13 @@ class PostPriceData extends Component {
     handleClose = () => {
         this.setState(() => {
             return {modalShow: false}
+        });
+    }
+
+    handleUpdateAndClose = () => {
+        this.state.onPosted();
+        this.setState(() => {
+          return {modalShow: false}
         });
     }
 
@@ -161,40 +170,42 @@ class PostPriceData extends Component {
                     itemCode={this.state.itemCode}
                     itemType={this.state.itemType}
                     priceData={this.state.priceValue}
-                    onDone={this.handleClose}
+                    onDone={this.handleUpdateAndClose}
                     onReset={this.handlePost}
                   />
               ]}
+              bodyStyle={{ padding: '0 16px 16px' }}
             >
+              <Divider orientation="left" style={{ margin: '10px 0' }}>Target Item</Divider>
               <Input.Group>
-                <Select defaultValue={this.state.itemType} style={{ width: '30%' }}
-                  onChange={this.onChangeItemType}
-                >
+                <Select defaultValue={this.state.itemType} style={{ width: '30%' }} onChange={this.onChangeItemType}>
                   <Select.Option value="unit">ユニット</Select.Option>
                   <Select.Option value="weapon">ウェポン</Select.Option>
                 </Select>
-                <Input defaultValue={this.state.itemCode} placeholder="OP name or id..." style={{ width: '70%' }}
-                  onChange={this.onChangeItemCode}
-                />
+                <Input defaultValue={this.state.itemCode} placeholder="OP name or id..." style={{ width: '70%' }} onChange={this.onChangeItemCode}/>
               </Input.Group>
-              <Input addonBefore="ANY" placeholder="price for any socket" addonAfter="メセタ"
-                pkey="any" onChange={this.onChangePriceValue}/>
-              <Input addonBefore="S1" placeholder="price for S1" addonAfter="メセタ"
-                pkey="s1" onChange={this.onChangePriceValue}/>
-              <Input addonBefore="S2" placeholder="price for S2" addonAfter="メセタ"
-                pkey="s2" onChange={this.onChangePriceValue}/>
-              <Input addonBefore="S3" placeholder="price for S3" addonAfter="メセタ"
-                pkey="s3" onChange={this.onChangePriceValue}/>
-              <Input addonBefore="S4" placeholder="price for S4" addonAfter="メセタ"
-                pkey="s4" onChange={this.onChangePriceValue}/>
-              <Input addonBefore="S5" placeholder="price for S5" addonAfter="メセタ"
-                pkey="s5" onChange={this.onChangePriceValue}/>
-              <Input addonBefore="S6" placeholder="price for S6" addonAfter="メセタ"
-                pkey="s6" onChange={this.onChangePriceValue}/>
-              <Input addonBefore="S7" placeholder="price for S7" addonAfter="メセタ"
-                pkey="s7" onChange={this.onChangePriceValue}/>
-              <Input addonBefore="S8" placeholder="price for S8" addonAfter="メセタ"
-                pkey="s8" onChange={this.onChangePriceValue}/>
+
+              <Divider orientation="left" style={{ margin: '10px 0' }}>Socket Data</Divider>
+              <Space direction="vertical" style={{ width: '100%' }}>
+                <Input addonBefore="ANY" placeholder="price for any socket" addonAfter="メセタ"
+                  pkey="any" onChange={this.onChangePriceValue}/>
+                <Input addonBefore="S1" placeholder="price for S1" addonAfter="メセタ"
+                  pkey="s1" onChange={this.onChangePriceValue}/>
+                <Input addonBefore="S2" placeholder="price for S2" addonAfter="メセタ"
+                  pkey="s2" onChange={this.onChangePriceValue}/>
+                <Input addonBefore="S3" placeholder="price for S3" addonAfter="メセタ"
+                  pkey="s3" onChange={this.onChangePriceValue}/>
+                <Input addonBefore="S4" placeholder="price for S4" addonAfter="メセタ"
+                  pkey="s4" onChange={this.onChangePriceValue}/>
+                <Input addonBefore="S5" placeholder="price for S5" addonAfter="メセタ"
+                  pkey="s5" onChange={this.onChangePriceValue}/>
+                <Input addonBefore="S6" placeholder="price for S6" addonAfter="メセタ"
+                  pkey="s6" onChange={this.onChangePriceValue}/>
+                <Input addonBefore="S7" placeholder="price for S7" addonAfter="メセタ"
+                  pkey="s7" onChange={this.onChangePriceValue}/>
+                <Input addonBefore="S8" placeholder="price for S8" addonAfter="メセタ"
+                  pkey="s8" onChange={this.onChangePriceValue}/>
+              </Space>
             </Modal>
           </div>
         )
