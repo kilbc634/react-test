@@ -51,7 +51,7 @@ class PostPriceData extends Component {
         this.state = {
             itemCode: props.itemCode,
             itemType: props.itemType,
-            onPosted: props.onPosted,
+            refetch: props.refetch,
             priceValue: {
                 any: null,
                 s1: null,
@@ -68,7 +68,7 @@ class PostPriceData extends Component {
         }
         this.handleShow = this.handleShow.bind(this);
         this.handleClose = this.handleClose.bind(this);
-        this.handleUpdateAndClose = this.handleUpdateAndClose.bind(this);
+        this.handleRefetchAndClose = this.handleRefetchAndClose.bind(this);
         this.handlePosting = this.handlePosting.bind(this);
         this.handlePost = this.handlePost.bind(this);
         this.onChangePriceValue = this.onChangePriceValue.bind(this);
@@ -88,8 +88,8 @@ class PostPriceData extends Component {
         });
     }
 
-    handleUpdateAndClose = () => {
-        this.state.onPosted();
+    handleRefetchAndClose = () => {
+        this.state.refetch();
         this.setState(() => {
           return {modalShow: false}
         });
@@ -170,7 +170,7 @@ class PostPriceData extends Component {
                     itemCode={this.state.itemCode}
                     itemType={this.state.itemType}
                     priceData={this.state.priceValue}
-                    onDone={this.handleUpdateAndClose}
+                    onDone={this.handleRefetchAndClose}
                     onReset={this.handlePost}
                   />
               ]}

@@ -1,28 +1,67 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { Row } from 'react-bootstrap';
+import { Space } from 'antd'
 import sortablejs from 'sortablejs';
 import PostPriceDataButton from './PostPriceData';
+import ChangePriceDataButton from './ChangePriceData';
 import CanvasJSReact from './canvasjs.react';
 import { useQuery } from '@apollo/client';
 import { GQL_getOptionData } from './gql_query/gql_optionData';
 const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 function generateDataPoints(datas, dataKey) {
+    var noData = true;
     var dataPoints = datas.map(data => {
+        if (noData && data[dataKey]) {
+            noData = false;
+        }
         return {
             x: Number(data['timestamp']),
             y: data[dataKey] || null
         }
     });
-    return dataPoints;
+    if (noData) {
+        return [];
+    } else {
+        return dataPoints;
+    }
+}
+
+function generateDataSetting(datas, dataKey, type='area') {
+    var dataPoints = generateDataPoints(datas, dataKey.toLowerCase())
+    var setting = {
+        type: type,
+        //fillOpacity: 1,
+        legendText: dataKey.toUpperCase(),
+        showInLegend: true,
+        xValueType: 'dateTime',
+        dataPoints: dataPoints
+    }
+    return setting;
 }
 
 function PanelComponent(props) {
-    var dataCode = props.dataCode;
+    const dataCode = props.dataCode;
+    const [dataType, setDataType] = useState('unit');
+    const updateDataType = (type) => {
+        if (['weapon', 'unit'].includes(type)) {
+            setDataType(type);
+        }
+    }
+    const [socketShow, setSocketShow] = useState(['s6', 's7', 's8']);
+    const updateSocketShow = (socketList) => {
+        let newSocketList = socketList.map((socket) => {
+            let lowerCase = socket.toLowerCase();
+            if (['any', 's1', 's2', 's3', 's4', 's5', 's6', 's7', 's8'].includes(lowerCase)) {
+                return lowerCase;
+            }
+        });
+        setSocketShow(newSocketList);
+    }
     const { loading, error, data, refetch } = useQuery(GQL_getOptionData, {
         variables: {
             "code": dataCode,
-            "type": "weapon"
+            "type": dataType
         }
     });
     if (loading) return null;
@@ -30,7 +69,7 @@ function PanelComponent(props) {
     var options = {};
     if (data['getOptionData']['priceDatas'].length == 0) {
         options = {
-            theme: "dark2", // "light1", "light2", "dark1", "dark2"
+            theme: "dark1", // "light1", "light2", "dark1", "dark2"
             title: {
                 text: `${data['getOptionData']['code']} (${data['getOptionData']['type']})`
             },
@@ -47,6 +86,10 @@ function PanelComponent(props) {
             ]
         }
     } else {
+        const dataKeys = socketShow.sort().reverse();
+        const dataSettings = dataKeys.map((dataKey) => {
+            return generateDataSetting(data['getOptionData']['priceDatas'], dataKey);
+        });
         options = {
             theme: 'dark1', // "light1", "light2", "dark1", "dark2"
             animationEnabled: true,
@@ -58,41 +101,24 @@ function PanelComponent(props) {
                 horizontalAlign: 'center',
                 verticalAlign: 'top'
             },
-            data: [
-                {
-                    type: 'area',
-                    //fillOpacity: 1,
-                    legendText: "S8",
-                    showInLegend: true,
-                    xValueType: 'dateTime',
-                    dataPoints: generateDataPoints(data['getOptionData']['priceDatas'], 's8')
-                },
-                {
-                    type: 'area',
-                    //fillOpacity: 1,
-                    legendText: "S7",
-                    showInLegend: true,
-                    xValueType: 'dateTime',
-                    dataPoints: generateDataPoints(data['getOptionData']['priceDatas'], 's7')
-                },
-                {
-                    type: 'area',
-                    //fillOpacity: 1,
-                    legendText: "S6",
-                    showInLegend: true,
-                    xValueType: 'dateTime',
-                    dataPoints: generateDataPoints(data['getOptionData']['priceDatas'], 's6')
-                }
-            ]
+            data: dataSettings
         }
     }
     return (
       <Row>
-        <PostPriceDataButton
-          itemCode={data['getOptionData']['code']}
-          itemType={data['getOptionData']['type']}
-          onPosted={refetch}
-        />
+        <Space>
+          <PostPriceDataButton
+            itemCode={data['getOptionData']['code']}
+            itemType={data['getOptionData']['type']}
+            refetch={refetch}
+          />
+          <ChangePriceDataButton
+            defaultItemType={data['getOptionData']['type']}
+            defaultScoketShow={socketShow}
+            toChange={updateDataType}
+          />
+        </Space>
+        
         <CanvasJSChart options={options}/>
       </Row>
     );
